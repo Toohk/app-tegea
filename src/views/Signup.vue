@@ -14,7 +14,6 @@
 
             <v-form
                 ref="form"
-                v-model="user"
                 lazy-validation
                 @submit.prevent="signUp"
             >
@@ -60,12 +59,11 @@ import axios from 'axios';
 export default {
 
   data: () => {
+
     return{
       show : false,
-      user: {
-        email:'',
-        password:''
-      }
+      email:'',
+      password:''
     }
   },
 
@@ -73,19 +71,15 @@ export default {
 
     signUp(){
       
-    axios.post('http://localhost:3000/api/user/signup', {
-      'email': this.email,
-      'password': this.password
-        },{
-        headers: {'Content-Type': 'application/json'}
+      axios.post('http://localhost:3000/api/user/signup', {
+        'email': this.email,
+        'password': this.password
+          },{
+          headers: {'Content-Type': 'application/json'}
       })
-    .then(response => { 
-        console.log(response)
-        this.$router.push("/login");
+      .then(() => { 
+          this.$router.push("/login");
       })
-      .catch(error => {
-          console.log(error.response)
-      });
       
     }
   }
