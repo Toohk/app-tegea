@@ -2,17 +2,17 @@
     <v-layout row justify-center>
         <v-flex xs12 sm11>
 
-            <v-card v-for="(tab, i) in targetBinder.tables.quantitative_sales.forecast.tabs" v-bind:key="tab._id">
+            <v-card v-for="(tabAchieve, i) in targetBinder.tables.quantitative_sales.achieve.tabs" v-bind:key="tabAchieve._id">
                     <v-content>
                         <v-card-title><h4>{{targetBinder.markets[i].name}}</h4></v-card-title>
-                        <v-btn flat icon @click="editMode(tab._id)"><v-icon>edit</v-icon></v-btn>
-                        <v-btn flat icon @click="suppMarket(tab.market_id)"><v-icon>delete</v-icon></v-btn>
+                        <v-btn flat icon @click="editMode(tab)"><v-icon>edit</v-icon></v-btn>
+                        <v-btn flat icon @click="suppMarket(tabAchieve.market_id)"><v-icon>delete</v-icon></v-btn>
                         <v-divider></v-divider>
                         <v-list dense>
-                            <v-list-tile v-for="(line, index) in tab.lines" v-bind:key="line._id">
+                            <v-list-tile v-for="(lineAchieve, index) in tabAchieve.lines" v-bind:key="lineAchieve._id">
                                 <v-list-tile-content>{{months[index]}}</v-list-tile-content>
-                                <v-list-tile-content class="align-end"><v-text-field type="number" v-bind:disabled="disabled" v-model="line.volume"></v-text-field ></v-list-tile-content>
-                                <v-list-tile-content class="align-end"><v-text-field type="number" v-bind:disabled="disabled" v-model="line.price"></v-text-field ></v-list-tile-content>
+                                <v-list-tile-content class="align-end"><v-text-field type="number" v-bind:disabled="disabled" v-model="lineAchieve.volume"></v-text-field ></v-list-tile-content>
+                                <v-list-tile-content class="align-end"><v-text-field type="number" v-bind:disabled="disabled" v-model="lineAchieve.price"></v-text-field ></v-list-tile-content>
                             </v-list-tile>
                         </v-list>
                 </v-content>

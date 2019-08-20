@@ -15,7 +15,7 @@
             <v-form
                 ref="form"
                 lazy-validation
-                @submit.prevent="signUp"
+                @submit.prevent="sign"
             >
       
               <v-text-field
@@ -54,7 +54,7 @@
 
 <script>
 
-import axios from 'axios';
+import { mapActions } from 'vuex';
 
 export default {
 
@@ -68,20 +68,14 @@ export default {
   },
 
   methods: {
-
-    signUp(){
-      
-      axios.post('http://localhost:3000/api/user/signup', {
-        'email': this.email,
-        'password': this.password
-          },{
-          headers: {'Content-Type': 'application/json'}
-      })
-      .then(() => { 
-          this.$router.push("/login");
-      })
-      
+    ...mapActions([
+            'signUp',
+    ]),
+    sign(){
+     const signUpdata = {'email': this.email,'password': this.password};
+     this.signUp(signUpdata);
     }
+    
   }
 }
   

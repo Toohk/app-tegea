@@ -16,14 +16,14 @@
       >
         
         <v-text-field
-          v-model="name"
+          v-model="targetBinder.name"
           label="Nom"
           required
           prepend-icon="class"
         ></v-text-field>
 
         <v-text-field
-          v-model="description"
+          v-model="targetBinder.description"
           label="Description"
           required
           prepend-icon="tag"
@@ -62,8 +62,8 @@ export default {
   data: () => {
     
     return{
-      name:this.targetBinder.name,
-      description: this.targetBinder.description,
+      name:"",
+      description: "",
     }
   },
   
@@ -78,7 +78,6 @@ export default {
   methods: {
     ...mapActions([
       'editBinder',
-      'loadBinders'
     ]),
 
    

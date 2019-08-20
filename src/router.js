@@ -33,6 +33,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   store.dispatch('fetchAccessToken');
+
   if (to.fullPath === '/') {
     if (!store.state.accessToken) {
       next('/login');

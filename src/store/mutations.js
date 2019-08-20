@@ -1,30 +1,42 @@
 export default {
 
-    loginStart: state => state.loggingIn = true,
+  loginStart: state => state.loggingIn = true,
 
-    loginStop: (state, errorMessage) => {
-      state.loggingIn = false;
-      state.loginError = errorMessage;
-    },
+  loginStop: (state, errorMessage) => {
+    state.loggingIn = false;
+    state.loginError = errorMessage;
+  },
 
-    updateAccessToken: (state, accessToken) => {
-      state.accessToken = accessToken;
-    },
+  updateAccessToken: (state, accessToken) => {
+    state.accessToken = accessToken;
+  },
 
-    logout: (state) => {
-      state.accessToken = null;
-    },
+  logout: (state) => {
+    state.accessToken = null;
+  },
 
-    updateFolders:(state, dataFolders) => {
-        state.folders = dataFolders;
-    },
 
+  updateLibrary:(state, data) => {
+    state.library = data;
+      //const fusion = Object.assign({}, state.library, data);
+  },
+  updateBinder:(state, data) => {
+    const binder=  state.library.folders.find(folder => folder == state.targetFolder)
+      .binders.find(binder => binder == state.targetBinder);
+    state.library.folders.find(folder => folder == state.targetFolder)
+      .binders[binder] = data;
+  },
+  updateTable:(state, data) => {
+    state.library.folders.find(folder => folder == state.targetFolder)
+      .binders.find(binder => binder == state.targetBinder)
+        .tables.quantitative_sales.tabs.find(tab => tab == state.targetTab)
+          .tab = data
+  },
+
+
+  
     updateTargetFolder:(state, dataTargetFolder) => {
       state.targetFolder = dataTargetFolder;
-    },
-
-    updateBinders:(state, dataBinders) =>{
-      state.binders = dataBinders;
     },
 
     updateTargetBinder:(state, dataTargetBinder) => {
@@ -34,6 +46,7 @@ export default {
     clear:(state) =>{
       state.targetFolder= '';
       state.binders= '';
+      state.targetMarket= '';
     },
 
 };

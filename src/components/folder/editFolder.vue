@@ -16,7 +16,7 @@
       >
         
         <v-text-field
-          v-model="name"
+          v-model="targetFolder.name"
           label="Nom"
          
           required
@@ -50,7 +50,8 @@ export default {
   data: () => {
     
     return{
-      name: this.targetFolder.name, 
+      name:""
+
     }
   },
   
@@ -67,7 +68,6 @@ export default {
   methods: {
     ...mapActions([
       'editFolder',
-      'loadFolders'
     ]),
    
     editFolderSubmit(){ 

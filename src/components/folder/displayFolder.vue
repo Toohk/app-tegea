@@ -8,8 +8,8 @@
 
       <v-layout row wrap >
   
-        <v-hover v-for="(folder, index) in folders"
-        v-bind="folders"
+        <v-hover v-for="(folder, index) in library.folders"
+        v-bind="folder"
         :key="index">
 
           <v-card 
@@ -19,16 +19,16 @@
           v-ripple="{ center: true }"
           >
  
-            <v-card-header class="header-folder" @click="onFolder(folder)">
+            <div class="header-folder" @click="onFolder(folder)">
               <v-avatar>
                 <v-icon class='orange lighten-1 white--text'>folder</v-icon>
               </v-avatar>
               
-            </v-card-header>
+            </div>
 
-            <v-card-content class="title-folder" @click="onFolder(folder)">
+            <div class="title-folder" @click="onFolder(folder)">
               <v-card-title>{{ folder.name}}</v-card-title>
-            </v-card-content>
+            </div>
 
             <v-card-actions class="btn-more">
               <v-speed-dial direction="bottom">
@@ -101,19 +101,14 @@ import editFolder from '../folder/editFolder';
   },
   computed: {
     ...mapState([
-      'folders'
+      'library'
     ])
   },
 
-  created() {  
-    this.loadFolders();
-  },
- 
   methods: {
 
     ...mapActions([
       'keepFolder',
-      'loadFolders'
     ]),
  
     onClickChild (value) {

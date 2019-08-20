@@ -1,8 +1,28 @@
 import axios from 'axios';
 import router from '../router';
 
-export default { 
+/* eslint-disable */
 
+export default {
+
+    /** Authentication */
+
+    signUp(signUpData){
+        axios.post('http://localhost:3000/api/user/signup', {
+          'email': signUpData.email,
+          'password': signUpData.password
+            },{
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then((response) => { 
+            axios.post('http://localhost:3000/api/library/new', {
+                user : response.data.user,
+        })
+            .then(() => { 
+                router.push("/login");
+            }); 
+        })
+    },
     doLogin({ commit }, loginData) {
         commit('loginStart');
         axios.post('http://localhost:3000/api/user/login', {
@@ -19,11 +39,9 @@ export default {
             commit('updateAccessToken', null);
         })
     },
-
     fetchAccessToken({ commit }) {
         commit('updateAccessToken', localStorage.getItem('accessToken'));
     },
-
     logout({ commit }) {
         localStorage.removeItem('accessToken');
         commit('logout');
@@ -31,115 +49,122 @@ export default {
     },
 
 
-    loadFolders({commit}){
-        axios.get('http://localhost:3000/api/folder/get',{
-          headers: {'accessToken': this.state.accessToken}
-        }).then(response => {
-          commit('updateFolders', response.data.folder.reverse());
-        });
+
+
+    /** Folder */
+
+    createFolder({commit}, submitFolder){
+        const library = this.state.library;
+        library.folders.push({"name":submitFolder, "binders":[]});
+        commit('updateLibrary', library);
+    },
+    editFolder({commit}, editedName){
+        const library = this.state.library;
+        library.folders.find(folder => folder == this.state.targetFolder).name = editedName;
+        commit('updateLibrary', library);
+    },
+    deleteFolder({commit}){
+        const library = this.state.library;
+        const index = library.folders.indexOf(this.state.targetFolder);
+        if (index > -1){
+            library.folders.splice(index,1)
+        }
+        commit('updateLibrary', library);
+    },
+    keepFolder({commit}, dataTargetFolder){
+        commit('updateTargetFolder', dataTargetFolder);
     },
 
-    keepFolder({ commit }, dataTargetFolder){
-        commit('updateTargetFolder', dataTargetFolder)
-        console.log(dataTargetFolder)
-        axios.get('http://localhost:3000/api/binder/get',{
-            params: {id: this.state.targetFolder._id}
-        })
-        .then(response => { 
-            const dataBinders = response.data.binder.reverse();
-            commit('updateBinders', dataBinders);
 
-        });
-    },
-    createFolder({dispatch}, submitFolder){
-        axios.post('http://localhost:3000/api/folder/new', {
-        name : submitFolder,
-        },{
-          headers: {'accessToken': this.state.accessToken}, 
-        })
-        .then(() => { 
-            dispatch('loadFolders');
-        });
-    },
-    deleteFolder({dispatch}){
-        axios.delete('http://localhost:3000/api/binder/delete/all', {
-          params: { 'id': this.state.targetFolder._id }, 
-        })
-        axios.delete('http://localhost:3000/api/folder/delete', {
-          params: { 'id': this.state.targetFolder._id }, 
-        })
-        .then(() => { 
-            dispatch('loadFolders');
-        });
-    },
-    editFolder({commit, dispatch}, editedName){
-        axios.put('http://localhost:3000/api/folder/edit', {
-        name : editedName,
-        },{
-          params: { 'id': this.state.targetFolder._id }, 
-        })
-        .then(() => { 
-            dispatch('loadFolders');
-        });
-    },
-
+    /** Binder */
     
-    loadBinders({commit}){
-        axios.get('http://localhost:3000/api/binder/get',{
-            params: {id: this.state.targetFolder._id}
-        })
-        .then(response => { 
-            const dataBinders = response.data.binder.reverse();
-            commit('updateBinders', dataBinders);
-
-        });
+    createBinder({commit}, submitBinder){
+        const library = this.state.library;
+        library.folders.find(folder => folder == this.state.targetFolder)
+            .binders.push({
+                "name": submitBinder.name,
+                "description": submitBinder.description,
+                "markets": [],
+                "tables": {
+                    "quantitative_sales":{
+                        "forecast":{
+                            "tabs":[]
+                        },
+                        "achieve":{
+                            "tabs":[]
+                        }
+                    }
+                }
+            })
+        commit('updateLibrary', library);
     },
-    keepBinder({ commit }, dataTargetBinder){
+    editBinder({commit}, editedBinder){
+        const binder = this.state.targetFolder.binders
+            .find(binder => binder == this.state.targetBinder);
+        binder.name = editedBinder.name;
+        binder.description = editedBinder.description
+        commit('updateBinder', binder);
+    },
+    deleteBinder({commit}, binder){
+        const folder = this.state.targetFolder;
+        const index = folder.binders.indexOf(this.state.targetBinder);
+        if (index > -1){
+            folder.binders.splice(index,1)
+        }
+        commit('updateBinder', binder);
+    },
+    keepBinder({commit}, dataTargetBinder){
         commit('updateTargetBinder', dataTargetBinder)
+    },
+    
 
+    /** Market */
+
+    createMarket({commit}, submitMarket){
+        const binder = this.state.targetFolder.binders
+            .find(binder => binder == this.state.targetBinder);
+        binder.markets.push({"name": submitMarket});
+        const market = binder.markets[binder.markets.length-1]
+        const lines = [];
+        
+        let a;
+        for (let a = 0; a < 12; a++){
+            lines.push({"volume": null,"price": null})
+        }
+        binder.tables.quantitative_sales.forecast.tabs.push(
+            {"market_id":market, "lines":lines});
+        const lines2 = []
+        let b;
+        for (let b = 0; b < 12; b++){
+            lines2.push({"volume": null,"price": null})
+        }
+        binder.tables.quantitative_sales.achieve.tabs.push(
+            {"market_id":market, "lines":lines2});
+        commit('updateBinder', binder);
     },
-    createBinder({dispatch}, submitBinder){
-        axios.post('http://localhost:3000/api/binder/new', {
-        name : submitBinder.name,
-        description : submitBinder.description,
-        folder : this.state.targetFolder._id,
-        })
-        .then(() => { 
-            dispatch('loadBinders');
-        });
-    },
-    deleteBinder({dispatch}){
-        axios.delete('http://localhost:3000/api/binder/delete', {
-          params: { 'id': this.state.targetBinder._id }, 
-        })
-        .then(() => { 
-            dispatch('loadBinders');
-        });
-    },
-    editBinder({dispatch}, editedBinder){
-        axios.put('http://localhost:3000/api/binder/edit', {
-        name : editedBinder.name,
-        description: editedBinder.description
-        },{
-          params: { 'id': this.state.targetBinder._id }, 
-        })
-        .then(() => { 
-            dispatch('loadBinders');
-        });
+    /** editMarket({commit}, market){
+        
+    },*/
+    deleteMarket({commit}, market){
+        const binder = this.state.targetFolder.binders
+            .find(binder => binder == this.state.targetBinder);
+        const index = binder.markets.indexOf(market);
+        if (index > -1){
+            binder.markets.splice(index,1)
+        }
+        const forecast_tabs = binder.tables.quantitative_sales.forecast.tabs.find( tab => tab.market_id === market);
+        const index2 = binder.tables.quantitative_sales.forecast.tabs.indexOf(forecast_tabs);
+        if (index2 > -1){
+            binder.tables.quantitative_sales.forecast.tabs.splice(index2,1)
+        }
+        const achieve_tabs = binder.tables.quantitative_sales.achieve.tabs.find( tab => tab.market_id === market);
+        const index3 = binder.tables.quantitative_sales.achieve.tabs.indexOf(achieve_tabs);
+        if (index3 > -1){
+            binder.tables.quantitative_sales.achieve.tabs.splice(index3,1)
+        }
+        commit('updateBinder', binder);
     },
     clearData({commit}){
         commit('clear');
     },
-    createMarket({dispatch}, submitMarket){
-        axios.put('http://localhost:3000/api/binder/market/new', {
-        name : submitMarket,
-        },{
-        params: { 'id': this.state.targetBinder._id }, 
-        })
-        .then(() => { 
-            dispatch('loadBinders');
-        });
-    },
-
-
 };

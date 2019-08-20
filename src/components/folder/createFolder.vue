@@ -56,13 +56,11 @@ export default {
   methods: {
     ...mapActions([
       'createFolder',
-      'loadFolders'
     ]),
    
     createFolderSubmit(){
       this.createFolder(this.name)
       .then(() => { 
-        this.loadFolders()
         this.$emit('clicked', false)
         this.name='';
       })

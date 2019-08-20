@@ -8,8 +8,8 @@
 
       <v-layout row wrap >
   
-        <v-hover v-for="(binder, index) in binders"
-        v-bind="binders"
+        <v-hover v-for="(binder, index) in targetFolder.binders"
+        v-bind="binder"
         :key="index">
 
           <v-card 
@@ -20,17 +20,17 @@
           
           >
  
-            <v-card-header class="header-binder" @click="onBinder(binder)">
+            <div class="header-binder" @click="onBinder(binder)">
               <v-avatar>
                 <v-icon class='green lighten-1 white--text'>class</v-icon>
               </v-avatar>
               
-            </v-card-header>
+            </div>
 
-            <v-card-content @click="onBinder(binder)">
+            <div @click="onBinder(binder)">
               <v-card-title class="green--text">{{ binder.name}} </v-card-title>
               <v-card-text class="grey--text">{{ binder.description}} </v-card-text>
-            </v-card-content>
+            </div>
             
                 
           
@@ -103,7 +103,6 @@ export default {
     computed: {
         ...mapState([
             'targetFolder',
-            'binders'
         ]),
     },
 
