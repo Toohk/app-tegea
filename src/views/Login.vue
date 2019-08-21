@@ -41,10 +41,14 @@
                     Connexion
                   </v-btn>
               </v-card-actions>
+              
           
             </v-form>
           </v-container>
         </v-card>
+        <router-link to="/signup">
+<v-btn color="warning">S'inscrire</v-btn>
+</router-link>
       </v-flex>
   </v-layout>
 </template>
@@ -52,6 +56,7 @@
 <script>
 
 import { mapState, mapActions } from 'vuex';
+import router from '../router'
 
 export default {
     data () {
@@ -80,6 +85,9 @@ export default {
           'password': this.password
         });
  
+      },
+      sign(){
+        router.push("signup") 
       }
     },
   }
