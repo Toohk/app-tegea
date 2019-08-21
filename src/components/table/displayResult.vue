@@ -56,7 +56,7 @@
 
 <script>
 import VueApexCharts from 'vue-apexcharts';
-import { mapState, mapActions} from 'vuex';
+import { mapState} from 'vuex';
 
 export default {
   name: 'Chart',

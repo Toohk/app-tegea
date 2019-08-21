@@ -1,3 +1,5 @@
+
+
 export default {
 
   loginStart: state => state.loggingIn = true,
@@ -18,6 +20,8 @@ export default {
 
   updateLibrary:(state, data) => {
     state.library = data;
+    localStorage.setItem('library', JSON.stringify(state.library));
+
       //const fusion = Object.assign({}, state.library, data);
   },
   updateBinder:(state, data) => {
@@ -25,6 +29,7 @@ export default {
       .binders.find(binder => binder == state.targetBinder);
     state.library.folders.find(folder => folder == state.targetFolder)
       .binders[binder] = data;
+    localStorage.setItem('library', JSON.stringify(state.library));
   },
   updateTable:(state, data) => {
     state.library.folders.find(folder => folder == state.targetFolder)
@@ -45,8 +50,6 @@ export default {
 
     clear:(state) =>{
       state.targetFolder= '';
-      state.binders= '';
-      state.targetMarket= '';
     },
 
 };

@@ -7,21 +7,16 @@ export default {
 
     /** Authentication */
 
-    signUp(signUpData){
+    signUp({ commit }, signUpData){
         axios.post('http://localhost:3000/api/user/signup', {
           'email': signUpData.email,
           'password': signUpData.password
             },{
             headers: {'Content-Type': 'application/json'}
-        })
-        .then((response) => { 
-            axios.post('http://localhost:3000/api/library/new', {
-                user : response.data.user,
-        })
-            .then(() => { 
+        }).then(() => { 
                 router.push("/login");
             }); 
-        })
+        
     },
     doLogin({ commit }, loginData) {
         commit('loginStart');
@@ -44,8 +39,30 @@ export default {
     },
     logout({ commit }) {
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('library');
         commit('logout');
         router.push('/login');
+    },
+    fetchLibrary({ commit }) {
+        if (localStorage.getItem('library') == "null"){
+            console.log('fetch')
+            axios.get('http://localhost:3000/api/library/get',{
+            headers:{
+                'accessToken' : this.state.accessToken}})
+             .then(response => {
+                 commit('updateLibrary',response.data.library[0]);
+            })
+        }else{ 
+        commit('updateLibrary', JSON.parse(localStorage.getItem('library')));}
+    },
+    updateLibrary() {
+        if (localStorage.getItem('library') !== "null"){
+            console.log('update')
+            axios.put('http://localhost:3000/api/library/update',{
+                
+                'library' : JSON.parse(localStorage.getItem('library'))})
+             
+        };
     },
 
 

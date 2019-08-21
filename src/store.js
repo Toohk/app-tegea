@@ -12,52 +12,7 @@ export default new Vuex.Store({
     loggingIn: false,
     loginError: null,
 
-    library:{
-      user:String,
-      folders:[
-        {
-            name: String,
-            binders:[
-                {
-                    name:String,
-                    description:String,
-                    markets:[
-                        {
-                            name:String
-                        }
-                    ],
-                    charges:[
-                        {
-                            name:String
-                        }
-                    ],
-                    questions:[
-                        {
-                            question:String
-                        }
-                    ],
-                    tables:{
-                        quantitative_sales:{
-                            tabs:[
-                                {
-                                    market_id: String,
-                                    type: String,
-                                    lines:[
-                                        {
-                                            volume: Number,
-                                            price: Number
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                         
-                    }
-                }
-            ]  
-        }
-    ]
-    },
+    library:'',
     targetFolder: '',
     targetBinder: '',
   },

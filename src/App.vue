@@ -15,11 +15,15 @@ export default {
   
   methods: {
     ...mapActions([
-      'fetchAccessToken'
+      'fetchAccessToken',
+      'fetchLibrary',
+      'updateLibrary'
     ]),
   },
   created() {
     this.fetchAccessToken();
+    this.fetchLibrary();
+    this.updateLibrary();
   },
 
 }
