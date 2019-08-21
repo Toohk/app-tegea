@@ -3,10 +3,11 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Signup from './views/Signup.vue'
+import store from './store';
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -14,9 +15,6 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home,
-      meta: { 
-        requiresAuth: true
-    }
     },
     {
       path: '/login',
@@ -29,5 +27,25 @@ export default new Router({
       component: Signup
     }
   ]
+
+  
 })
 
+router.beforeEach((to, from, next) => {
+  store.dispatch('fetchAccessToken');
+  store.dispatch('fetchLibrary')
+
+  if (to.fullPath === '/') {
+    if (!store.state.accessToken) {
+      next('/login');
+    }
+  }
+  if (to.fullPath === '/login') {
+    if (store.state.accessToken) {
+      
+      next('/');
+    }
+  }
+  next();
+});
+export default router;

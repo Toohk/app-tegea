@@ -1,5 +1,6 @@
 <template>
-  <v-app>
+  <v-app dark >
+    
     <v-content>
       <router-view></router-view>
     </v-content>
@@ -7,17 +8,23 @@
 </template>
 
 <script>
-
+import { mapActions } from 'vuex';
 
 export default {
   name: 'App',
-  components: {
-    
+  
+  methods: {
+    ...mapActions([
+      'fetchAccessToken',
+      'fetchLibrary',
+      'updateLibrary'
+    ]),
   },
-  data () {
-    return {
-      //
-    }
-  }
+  created() {
+    this.fetchAccessToken();
+    this.fetchLibrary();
+    this.updateLibrary();
+  },
+
 }
 </script>

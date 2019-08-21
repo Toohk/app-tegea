@@ -15,8 +15,7 @@
             <v-form
                 ref="form"
                 lazy-validation
-                v-model="user"
-                @submit.prevent="login"
+                @submit.prevent="loginSubmit"
             >
       
               <v-text-field
@@ -28,9 +27,8 @@
 
               <v-text-field
                   v-model="password"
-                :type="show ? 'text' : 'password'"
+                  :type="show ? 'text' : 'password'"
                   label="Mot de passe"
-
                   prepend-icon="lock"
               ></v-text-field>
 
@@ -52,41 +50,37 @@
 </template>
 
 <script>
-import axios from 'axios';
+
+import { mapState, mapActions } from 'vuex';
 
 export default {
     data () {
+      
       return{
-      user: {
+        show:'',
         email:'',
         password:''
       }
-    }
+    },
+    computed: {
+
+      ...mapState([
+        'loggingIn',
+        'loginError'
+      ])
     },
     methods: {
-      login(){
       
-    axios.post('http://localhost:3000/api/user/login', {
-      'email': this.email,
-      'password': this.password
-        },{
-        headers: {'Content-Type': 'application/json'}
-      })
-    .then(response => { 
-        console.log(response)
-        const token = response.data
-        console.log(token)
-      localStorage.setItem('authtoken', token) // store the token in localstorage
-     console.log(localStorage.authtoken)
-      this.$router.push("/");
-      })
-      .catch(error => {
-          console.log(error.response)
-          localStorage.removeItem('authtoken') // if the request fails, remove any possible user token if possible
-          reject(error)
-      });
-      
-    }
+      ...mapActions([
+        'doLogin'
+      ]),
+      loginSubmit() {
+        this.doLogin({
+          'email': this.email,
+          'password': this.password
+        });
+ 
+      }
     },
   }
 </script>
